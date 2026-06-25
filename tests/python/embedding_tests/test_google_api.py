@@ -113,7 +113,7 @@ def main():
     test_embedding = get_embedding(test_verb)
     
     if test_embedding:
-        print(f"✓ API test successful!")
+        print("✓ API test successful!")
         print(f"  Embedding dimensions: {len(test_embedding)}")
         print(f"  First 5 values: {test_embedding[:5]}")
     else:
@@ -142,7 +142,7 @@ def main():
         print(f"\n✓ Saved embeddings to: {output_file}")
         
         # Print a summary
-        print(f"\nSummary:")
+        print("\nSummary:")
         print(f"  Processed {len(embeddings)}/{len(verbs)} verbs")
         print(f"  Embedding dimensions: {len(list(embeddings.values())[0])}")
         print(f"  Output file: {output_file}")

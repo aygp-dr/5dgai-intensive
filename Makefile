@@ -12,6 +12,8 @@ RESET  := $(shell tput -Txterm sgr0)
 # Command definitions
 PYTHON := poetry run python
 HY     := poetry run hy
+# Prefer a ruff already on PATH (system or `poetry shell`); fall back to `poetry run`
+RUFF   := $(shell command -v ruff 2>/dev/null || echo poetry run ruff)
 
 # Org files and their targets
 ORG_FILES := $(shell find . -name "*.org" | grep -v -E '(/\.|/docs/|/node_modules/)')
@@ -135,7 +137,9 @@ check-tools:
 	@touch .tools-checked
 
 # Run all linters
-lint: lint-py lint-sh lint-org lint-el
+# lint-org and lint-el require a fully provisioned Emacs (melpa packages, gptel)
+# and are kept available as standalone targets via `lint-all`.
+lint: lint-py lint-sh
 	@echo "${GREEN}All linting complete!${RESET}"
 
 # Run all linters using the lint-all.sh script
@@ -145,17 +149,26 @@ lint-all:
 	@echo "${GREEN}Comprehensive linting complete!${RESET}"
 
 # Lint Python files
+# src/ is Hy-only; ruff covers the role of black/isort/flake8 for the few .py files we have
+PY_LINT_PATHS := $(shell find src tests examples -name "*.py" 2>/dev/null)
 lint-py:
 	@echo "${BLUE}Linting Python files...${RESET}"
-	@poetry run ruff check src tests examples
-	@poetry run mypy src
-	@poetry run flake8 src tests examples
+	@if [ -n "$(PY_LINT_PATHS)" ]; then \
+		$(RUFF) check $(PY_LINT_PATHS); \
+	else \
+		echo "${YELLOW}No .py files to lint${RESET}"; \
+	fi
 	@echo "${GREEN}Python linting complete!${RESET}"
 
 # Lint shell scripts
+SH_LINT_PATHS := $(wildcard scripts/*.sh) $(wildcard *.sh)
 lint-sh:
 	@echo "${BLUE}Linting shell scripts...${RESET}"
-	@shellcheck scripts/*.sh *.sh
+	@if [ -n "$(SH_LINT_PATHS)" ]; then \
+		shellcheck $(SH_LINT_PATHS); \
+	else \
+		echo "${YELLOW}No shell scripts to lint${RESET}"; \
+	fi
 	@echo "${GREEN}Shell script linting complete!${RESET}"
 
 # Lint Org mode files
@@ -192,13 +205,15 @@ format-py:
 # Format shell scripts
 format-sh:
 	@echo "${BLUE}Formatting shell scripts...${RESET}"
-	@shfmt -w -s -i 4 scripts/*.sh *.sh
+	@if [ -n "$(SH_LINT_PATHS)" ]; then \
+		shfmt -w -s -i 4 $(SH_LINT_PATHS); \
+	fi
 	@echo "${GREEN}Shell script formatting complete!${RESET}"
 
-# Run tests
-test:
-	@echo "${BLUE}Running tests...${RESET}"
-	@$(PYTHON) -m pytest -xvs tests
+# Run tests that don't require external services (live API keys, Ollama, etc.)
+# Hy tests use their own (when (= __name__ "__main__")) runner, not pytest.
+# `api-test`, `test-genai`, `test-ollama-*`, etc. cover the external-service tests.
+test: test-paper-summarizer test-livestream
 	@echo "${GREEN}Tests complete!${RESET}"
 
 # Run paper summarizer tests

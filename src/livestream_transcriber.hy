@@ -9,7 +9,7 @@
         time
         sys
         threading
-        [google.genai [genai types]])
+        google.genai [genai types])
 
 (defn setup-argparse []
   "Configure command-line argument parsing"
@@ -80,7 +80,8 @@
   ])
   
   (print "Downloading YouTube audio...")
-  (print f"Command: {' '.join cmd}")
+  (setv cmd-str (.join " " cmd))
+  (print f"Command: {cmd-str}")
   (print f"Output will be saved to: {output-path}")
   
   (setv process (subprocess.run cmd :capture_output True :text True))
@@ -107,7 +108,8 @@
   ])
   
   (print "Starting stream listener...")
-  (print f"Command: {' '.join cmd}")
+  (setv cmd-str (.join " " cmd))
+  (print f"Command: {cmd-str}")
   
   (subprocess.Popen cmd
                     :stdout subprocess.PIPE
@@ -124,7 +126,8 @@
   ])
   
   (print "Starting transcriber...")
-  (print f"Command: {' '.join cmd}")
+  (setv cmd-str (.join " " cmd))
+  (print f"Command: {cmd-str}")
   
   (subprocess.Popen cmd
                     :stdout subprocess.PIPE
@@ -143,7 +146,8 @@
   ])
   
   (print "Transcribing audio file...")
-  (print f"Command: {' '.join cmd}")
+  (setv cmd-str (.join " " cmd))
+  (print f"Command: {cmd-str}")
   
   (setv process (subprocess.run cmd :capture_output True :text True))
   (when (!= process.returncode 0)

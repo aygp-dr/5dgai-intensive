@@ -35,7 +35,7 @@ python_version=$(python3 --version 2>&1 | awk '{print $2}')
 python_major=$(echo "$python_version" | cut -d. -f1)
 python_minor=$(echo "$python_version" | cut -d. -f2)
 
-if [ "$python_major" -lt 3 ] || [ "$python_major" -eq 3 -a "$python_minor" -lt 11 ]; then
+if [ "$python_major" -lt 3 ] || { [ "$python_major" -eq 3 ] && [ "$python_minor" -lt 11 ]; }; then
   echo "⚠️ Python 3.11+ recommended (found $python_version)"
 else
   echo "✅ Python $python_version"

@@ -16,24 +16,19 @@ TMP_CRON=$(mktemp)
 # Export the current crontab
 crontab -l > "$TMP_CRON" 2>/dev/null || echo "# Crontab for 5-Day Gen AI Intensive Course" > "$TMP_CRON"
 
-# Add comments for clarity
-echo "" >> "$TMP_CRON"
-echo "# 5-Day Gen AI Intensive Course Livestream Capture" >> "$TMP_CRON"
-echo "# Added on $(date)" >> "$TMP_CRON"
-
-# Add entry for Day 1 (already streamed - process now)
-echo "# Day 1 - Already streamed - process immediately" >> "$TMP_CRON"
-echo "@reboot $CAPTURE_SCRIPT 1 # Process Day 1 livestream on reboot" >> "$TMP_CRON"
-
-# Simplify by just using auto-detection based on date
-# The course runs daily at 2pm EDT/EST from March 31 to April 4, 2025
-echo "# Automatically detect and process the current day's livestream (starts 5 minutes before)" >> "$TMP_CRON"
-echo "55 13 31 3 * 2025 $CAPTURE_SCRIPT # Day 1: March 31, 2025 at 2:00 PM" >> "$TMP_CRON"
-echo "55 13 1-4 4 * 2025 $CAPTURE_SCRIPT # Days 2-5: April 1-4, 2025 at 2:00 PM" >> "$TMP_CRON"
-
-# Also add a job to process any missed days the next morning
-echo "# Backup job to process any missed livestreams (morning after)" >> "$TMP_CRON"
-echo "0 9 1-5 4 * 2025 $CAPTURE_SCRIPT # Process previous day's livestream if missed" >> "$TMP_CRON"
+# Append all the new cron entries in a single redirected block
+{
+  echo ""
+  echo "# 5-Day Gen AI Intensive Course Livestream Capture"
+  echo "# Added on $(date)"
+  echo "# Day 1 - Already streamed - process immediately"
+  echo "@reboot $CAPTURE_SCRIPT 1 # Process Day 1 livestream on reboot"
+  echo "# Automatically detect and process the current day's livestream (starts 5 minutes before)"
+  echo "55 13 31 3 * 2025 $CAPTURE_SCRIPT # Day 1: March 31, 2025 at 2:00 PM"
+  echo "55 13 1-4 4 * 2025 $CAPTURE_SCRIPT # Days 2-5: April 1-4, 2025 at 2:00 PM"
+  echo "# Backup job to process any missed livestreams (morning after)"
+  echo "0 9 1-5 4 * 2025 $CAPTURE_SCRIPT # Process previous day's livestream if missed"
+} >> "$TMP_CRON"
 
 # Install the new crontab
 crontab "$TMP_CRON"

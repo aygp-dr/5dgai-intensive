@@ -139,3 +139,7 @@ papers/**/*.pdf
 *.core
 *llama_server.core
 ollama_llama_server.core
+
+# Local Claude Code state and ephemeral worktrees
+.claude/
+worktrees/

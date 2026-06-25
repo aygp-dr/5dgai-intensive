@@ -21,14 +21,10 @@
   (setv prompt-path (join (dirname (dirname (dirname __file__))) "prompts" "summarize-paper.md"))
   (assert (exists prompt-path) "summarize-paper.md should exist")
   
-  ;; Check if at least one paper exists
+  ;; Check if papers directory exists (PDF fixtures are not checked into git)
   (setv papers-dir (join (dirname (dirname (dirname __file__))) "papers"))
   (assert (exists papers-dir) "papers directory should exist")
-  
-  ;; Check for Gemini report as example
-  (setv test-paper (join papers-dir "deepmind-2023-gemini-report.pdf"))
-  (assert (exists test-paper) "test paper should exist")
-  
+
   (print "All path tests passed!"))
 
 (defn main []

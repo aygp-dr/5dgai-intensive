@@ -55,11 +55,9 @@ capture_livestream() {
 
 # Determine the day based on current date (2025)
 get_current_day() {
-  local current_date
   local day_of_year
   local year
-  
-  current_date=$(date +"%Y-%m-%d")
+
   day_of_year=$(date +"%j")
   year=$(date +"%Y")
   

@@ -1,11 +1,13 @@
 #!/usr/bin/env hy
 
+(import os)
 (import requests)
 (import json)
 
 (defn test-ollama []
   "Test Ollama API with a Scheme interpreter request"
-  (setv url "http://localhost:11434/api/chat")
+  (setv url (or (os.environ.get "OLLAMA_URL")
+                "http://192.168.86.22:11434/api/chat"))
   (setv payload 
     {"model" "llama3.2:latest"
      "messages" [

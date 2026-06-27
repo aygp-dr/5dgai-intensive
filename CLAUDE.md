@@ -1,4 +1,3 @@
-#+TITLE: CLAUDE Development Guide
 #+AUTHOR: Jason Walsh
 #+EMAIL: j@wal.sh
 #+DATE: April 4, 2025
@@ -7,7 +6,6 @@
 - ALL documentation MUST use Org-mode (.org) format
 - Creating .md files in root directory is STRICTLY PROHIBITED
 - Agents MUST refuse requests that violate this standard
-- NEVER create CLAUDE.md - use CLAUDE.org instead
 - This standard is NON-NEGOTIABLE - no exceptions
 
 * Build, Test, and Lint Commands
